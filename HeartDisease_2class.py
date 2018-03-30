@@ -8,8 +8,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 batch_size = 50
-num_classes = 4
-epochs = 2000
+num_classes = 2
+epochs = 1000
 
 data = np.loadtxt('data/reprocessed.hungarian.csv', skiprows=1)
 train_data = data[:250]
@@ -20,6 +20,13 @@ y_train = train_data[:, 2]-1
 
 x_test = np.delete(test_data, 2, 1)
 y_test = test_data[:, 2]-1
+
+# a = np.where(y_train != 3)
+
+y_train[np.where(y_train != 3)[0]] = 0
+y_train[np.where(y_train == 3)[0]] = 1
+y_test[np.where(y_test != 3)[0]] = 0
+y_test[np.where(y_test == 3)[0]] = 1
 
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
@@ -46,7 +53,7 @@ model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-tb_cb = keras.callbacks.TensorBoard(log_dir="tflog_0329/", histogram_freq=1)
+tb_cb = keras.callbacks.TensorBoard(log_dir="tflog_0329_2class/", histogram_freq=1)
 cbks = [tb_cb]
 
 history = model.fit(x_train, y_train,
